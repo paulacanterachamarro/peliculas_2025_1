@@ -4,8 +4,8 @@
 const TMDB = {
   BASE: "https://api.themoviedb.org/3",
   IMG_BASE: "https://image.tmdb.org/t/p/w500",
-  // ⚠️ Sustituye este texto por tu token Bearer de TMDb
-  BEARER: "TU_CLAVE_API_BEARER_AQUI",
+  // ⚠️ IMPORTANTE: Sustituye el texto de abajo por tu token real de TMDb
+  BEARER: "TU_CLAVE_API_BEARER_AQUI", 
   options() {
     return {
       method: "GET",
