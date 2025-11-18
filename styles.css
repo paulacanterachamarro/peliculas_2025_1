@@ -1,442 +1,151 @@
-/* ===== Variables para consistencia (Tema Profesional) ===== */
-:root {
-  --primary-color: #4f46e5; /* Indigo profesional */
-  --primary-hover: #4338ca;
-  --secondary-bg: #f3f4f6;
-  --card-bg: #ffffff;
-  --text-main: #111827;
-  --text-muted: #6b7280;
-  --danger-color: #ef4444;
-  --danger-hover: #dc2626;
-  --success-bg: #d1fae5;
-  --success-text: #065f46;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --radius: 12px;
-}
-
-/* ===== Reset básico ===== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* Estilos generales para index.html (Light/Blue Theme) */
 
 body {
-  font-family: 'Inter', sans-serif; /* Fuente moderna */
-  background: var(--secondary-bg);
-  color: var(--text-main);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
 }
 
-/* ===== Layout ===== */
-.container {
-  width: 100%;
-  max-width: 1100px; /* Un poco más ancho */
-  margin: 0 auto;
-  padding: 0 1.5rem;
+header {
+    background-color: var(--primary);
+    color: var(--card-bg);
+    padding: 20px 0;
+    text-align: center;
 }
 
-/* Header estilo "App Bar" moderno */
-.app-header {
-  background: #ffffff;
-  color: var(--text-main);
-  padding: 1rem 0;
-  margin-bottom: 2rem;
-  box-shadow: var(--shadow-sm);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    letter-spacing: 3px;
+    font-weight: 700;
 }
 
-.header-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+nav {
+    margin-top: 0;
+    background-color: #f8f9fa; /* Fondo claro */
+    padding: 10px 0;
+    border-bottom: 2px solid var(--primary);
+    text-align: center;
 }
 
-.app-header h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  color: var(--primary-color);
+/* Redefinimos los botones de navegación */
+nav button {
+    border: none;
+    background: transparent;
+    color: var(--primary);
+    font-weight: bold;
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+    height: auto;
+    min-width: 0;
+    font-size: 1rem;
+    cursor: pointer;
 }
 
-.app-footer {
-  margin-top: 3rem;
-  padding: 2rem 0;
-  text-align: center;
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  border-top: 1px solid #e5e7eb;
+nav button:hover {
+    background: transparent;
+    color: var(--secondary);
+    text-shadow: 0 0 5px rgba(23, 162, 184, 0.3);
 }
 
-/* ===== Navegación ===== */
-.main-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+
+main {
+    max-width: 1200px;
+    margin: 32px auto;
+    padding: 24px;
+    background: var(--bg-color);
+    border-radius: 8px;
 }
 
-/* ===== Botones Profesionales ===== */
-button {
-  border: none;
-  background: var(--primary-color);
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+h2 {
+    color: var(--primary);
+    margin-top: 0;
+    text-align: center;
 }
 
-button:hover {
-  background: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+.movie-list { 
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin: 32px 0;
 }
 
-button:active {
-  transform: translateY(0);
-}
-
-button.secondary {
-  background: #fff;
-  color: var(--text-main);
-  border: 1px solid #d1d5db;
-  box-shadow: var(--shadow-sm);
-}
-
-button.secondary:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
-}
-
-button.danger {
-  background: var(--danger-color);
-}
-
-button.danger:hover {
-  background: var(--danger-hover);
-}
-
-/* ===== Tarjetas de películas (Estilo Netflix/Moderno) ===== */
-.movies-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 2rem;
-  margin: 2rem 0;
-}
-
-.movie-card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0,0,0,0.03);
+.movie-card { 
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 16px;
+    text-align: center;
+    transition: box-shadow 0.3s, transform 0.3s;
 }
 
 .movie-card:hover {
-  transform: translateY(-8px); /* Efecto de elevación */
-  box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.2);
+    transform: translateY(-5px);
 }
 
 .movie-card img {
-  width: 100%;
-  height: 320px; /* Más altas */
-  object-fit: cover;
-  display: block;
-  transition: transform 0.5s ease;
-}
-
-.movie-card:hover img {
-  transform: scale(1.03); /* Zoom sutil en la imagen */
-}
-
-.movie-card-body {
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  background: #fff;
-  position: relative;
-  z-index: 1;
-}
-
-.movie-card-title {
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--text-main);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.movie-card-director {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-bottom: 0.5rem;
-}
-
-.movie-card .actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: auto; /* Empuja los botones al fondo */
-  padding-top: 1rem;
-  border-top: 1px solid #f3f4f6;
-}
-
-.movie-card .actions button {
-  font-size: 0.75rem;
-  padding: 0.4rem 0.75rem;
-  flex: 1;
-}
-
-/* ===== Formularios Estilizados ===== */
-form {
-  max-width: 500px;
-  margin: 2rem auto;
-  background: var(--card-bg);
-  padding: 2rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-}
-
-.form-group {
-  margin-bottom: 1.25rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--text-main);
-}
-
-input[type="text"] {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-  font-family: 'Inter', sans-serif;
-}
-
-input[type="text"]:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-/* ===== Vista detalle Mejorada ===== */
-.movie-detail {
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-}
-
-@media (min-width: 768px) {
-  .movie-detail {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-  .movie-detail > div:first-child {
-    width: 350px;
-    flex-shrink: 0;
-  }
-}
-
-.movie-detail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.movie-detail > div:last-child {
-  padding: 2rem;
-  flex-grow: 1;
-}
-
-.movie-detail h2 {
-    margin-top: 0;
-    font-size: 2rem;
-}
-
-/* ===== Resultados de búsqueda ===== */
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.result-card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  transition: transform 0.2s;
-}
-
-.result-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-
-.result-card img {
-  height: 300px;
-  width: 100%;
-  object-fit: cover;
-}
-
-.result-body {
-  padding: 1rem;
-}
-
-.result-body .meta {
-  font-size: 0.8rem;
-  color: var(--primary-color);
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Eliminamos el estilo de .overview */
-
-/* Estilo para las acciones en las tarjetas de búsqueda (separación vertical) */
-.result-actions {
-  display: flex;
-  flex-direction: column; /* Apilado vertical */
-  gap: 0.75rem; /* Separación vertical entre botones */
-  margin-top: 1rem;
-}
-
-.result-actions button {
-    width: 100%; /* Botones de ancho completo */
-    font-size: 0.9rem;
-}
-
-
-/* ===== Keywords ===== */
-.keywords-list {
-  list-style: none;
-  margin: 1rem 0;
-  padding: 0;
-}
-
-/* Hacemos el keyword-item clickeable para filtrar */
-.keyword-item {
-  background: #fff;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #e5e7eb;
-  cursor: pointer; /* Indicamos que es clickeable */
-  transition: all 0.2s ease;
-}
-
-.keyword-item:hover {
-    background: #eff6ff; /* Fondo azul claro al pasar el ratón */
-    border-color: var(--primary-color);
-}
-
-.keyword-label {
-  font-weight: 600;
-  color: var(--text-main);
-  text-transform: capitalize;
-}
-
-.keywords-actions {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .75rem;
-}
-
-
-/* ===== Mensajes ===== */
-.message,
-.info,
-.warning,
-.error {
-  margin-top: 1rem;
-  padding: 1rem 1.25rem;
-  border-radius: 8px;
-  font-size: .95rem;
-  font-weight: 500;
-}
-
-.info, .message.info {
-  background: #e0f2fe;
-  color: #0c4a6e;
-  border: 1px solid #bae6fd;
-}
-
-.warning {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
-}
-
-.error, .message.error {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-}
-
-/* ===== Secciones ===== */
-h2 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-section {
-  margin-bottom: 2rem;
-}
-
-/* ===== Utilidades ===== */
-.mt-1 { margin-top: .5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
-  .movie-detail {
-    grid-template-columns: 1fr;
-  }
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .main-nav {
     width: 100%;
-    overflow-x: auto; 
-    padding-bottom: 5px;
-  }
-  .movies-grid {
-     grid-template-columns: 1fr; 
-  }
+    height: 375px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+.movie-card h3 {
+    margin: 8px 0 4px 0;
+    font-size: 1.4rem;
+    color: var(--text-color);
+}
+
+.movie-card p {
+    margin: 0;
+    color: var(--secondary-text);
+    font-size: 1rem;
+}
+
+/* ESTILO PARA EL FOOTER DE COPYRIGHT */
+#footer {
+    background-color: var(--primary); 
+    color: var(--card-bg); 
+    text-align: center;
+    padding: 15px;
+    font-size: 0.9rem;
+    margin-top: 30px; 
+    font-weight: 500;
+}
+
+
+/* Estilos para las etiquetas de palabras clave (keyword-tag) */
+.keyword-tag {
+    background-color: #e9ecef; /* Fondo muy claro */
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    color: var(--secondary); /* Texto azul cyan */
+    display: inline-block;
+    margin: 4px;
+    cursor: pointer;
+    border: 1px solid var(--secondary);
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.keyword-tag:hover {
+    background-color: var(--secondary);
+    color: var(--card-bg); /* Texto blanco al pasar el ratón */
+    box-shadow: 0 2px 5px rgba(23, 162, 184, 0.5);
+}
+
+/* Botón de búsqueda por keyword específico */
+button.search-keyword-btn {
+    border-color: var(--secondary);
+    color: var(--secondary);
+}
+
+button.search-keyword-btn:hover {
+    background: var(--secondary);
+    color: var(--card-bg);
 }

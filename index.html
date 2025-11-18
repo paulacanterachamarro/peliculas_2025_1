@@ -1,36 +1,193 @@
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Mis Películas Favoritas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="utf-8">
+    <title>Mis Películas</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> 
+    <style>
+        /* Nuevas Variables CSS para Tema Blanco y Azul (Estilo Profesional) */
+        body { 
+            --primary: #007bff; /* Azul vibrante */
+            --secondary: #17a2b8; /* Azul cyan para acentos */
+            --bg-color: #f8f9fa; /* Fondo muy claro (casi blanco) */
+            --card-bg: #ffffff; /* Fondo de tarjetas y modales (blanco puro) */
+            --text-color: #212529; /* Texto muy oscuro */
+            --secondary-text: #6c757d; /* Gris para texto secundario */
+            margin: 0px;
+        }
+
+        /* Estilos base actualizados */
+        * {font-family: 'Roboto', sans-serif;}
+        
+        .modal-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); /* Sombra suave para el modal */
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--card-bg); 
+            color: var(--text-color);
+            border-radius: 8px; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 30px 20px 20px 20px;
+            min-width: 300px;
+            max-width: 90vw;
+            z-index: 1001;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        
+        button { 
+            -webkit-font-smoothing: antialiased;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            margin: 4px;
+            color: var(--primary);
+            background: var(--card-bg);
+            border: 1px solid var(--primary);
+            height: 30px;
+            min-width: 80px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: ease-in 0.2s all;
+            padding: 0 12px;
+            border-radius: 4px;
+        }
+        button:hover { 
+            background: var(--primary); 
+            color: var(--card-bg);
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+        }
+        
+        div#main {padding: 20px; background-color: var(--bg-color); min-height: 100vh;}
+        div#main {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        input {
+            margin-bottom: 5px; 
+            margin-top: 2px; 
+            padding: 10px; 
+            font-size: 14px; 
+            background: #fff; 
+            color: var(--text-color);
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            background: var(--primary); 
+            color: var(--card-bg); 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            font-size: 28px; 
+            margin: 0px; 
+            padding: 20px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        h2 { 
+            margin-block-start: 0px; 
+            margin-block-end: 15px; 
+            font-size: 26px;  
+            color: var(--primary);
+        }
+        
+        div.movie {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 250px;
+            padding: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            margin: 0;
+            background: var(--card-bg);
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #e9ecef;
+        }
+        div.movie:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2);
+        }
+        
+        div.movie div.movie-img {width: 100%; height: auto; min-height: 200px; cursor: pointer; overflow: hidden; border-radius: 4px;}
+        div.movie div.movie-img img {
+            width: 100%;
+            height: 375px; 
+            object-fit: cover;
+            aspect-ratio: 2/3;
+            background: #eee;
+            transition: transform 0.4s;
+        }
+        div.movie:hover div.movie-img img {
+            transform: scale(1.05);
+        }
+        
+        .modal img {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+            aspect-ratio: 2/3;
+            background: #eee;
+            display: block;
+            margin: 0 auto 15px auto;
+            border-radius: 4px;
+        }
+        div.movie div.title {
+            text-align: center; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            width: 100%; 
+            white-space: nowrap; 
+            color: var(--text-color);
+            font-size: 1.3rem;
+            margin-top: 10px;
+        }
+        div.movie div.actions {text-align: center; margin-top: 15px;}
+        div.field {
+            color: var(--secondary-text); 
+            text-transform: uppercase; 
+            font-size: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+        }
+        .modal p {
+            color: var(--secondary-text); 
+        }
+    </style>
 </head>
 <body>
-  <header class="app-header">
-    <div class="container header-content">
-      <h1>Mis Películas</h1>
-      <nav class="main-nav">
+    <h1>Mis Películas Favoritas</h1>
+    <nav>
         <button class="index">Inicio</button>
-        <button class="open-search">Buscar en TMDb</button>
-        </nav>
+        <button class="new">Añadir película</button>
+        <button class="search-view">Buscar película</button>
+        <button class="reset">Resetear lista</button>
+    </nav>
+    <div id="main"></div>
+    
+    <div id="footer">
+        Copyright ©️ 2025 Paula Cantera, Universidad San Pablo CEU
     </div>
-  </header>
 
-  <main id="main" class="container">
-    </main>
-
-  <footer class="app-footer">
-    <div class="container">
-      <p>©️ 2025 Paula Cantera - Universidad CEU San Pablo</p>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
