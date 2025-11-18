@@ -5,7 +5,7 @@ const TMDB = {
   BASE: "https://api.themoviedb.org/3",
   IMG_BASE: "https://image.tmdb.org/t/p/w500",
   // ⚠️ IMPORTANTE: Sustituye el texto de abajo por tu token real de TMDb
-  BEARER: "TU_CLAVE_API_BEARER_AQUI", 
+  BEARER: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzOTgxNWVjZTI4ZjcyNWJlZGRmY2Y3OGE0YzRjZGU0ZiIsIm5iZiI6MTc2MDQ1NjUxNS4xNDcsInN1YiI6IjY4ZWU2ZjQzNDYzMzQ0Yjg0MTlkZjQ3MCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ejdXz4pm0dZn0OAVJvJ16R8SwNAa-MBkO_yttUiblLk", 
   options() {
     return {
       method: "GET",
