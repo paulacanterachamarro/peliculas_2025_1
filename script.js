@@ -4,7 +4,7 @@
 const TMDB = {
   BASE: "https://api.themoviedb.org/3",
   IMG_BASE: "https://image.tmdb.org/t/p/w500",
-  // ⚠️ IMPORTANTE: Sustituye el texto de abajo por tu token real de TMDb
+  // ⚠️ CLAVE API REAL OBTENIDA DEL USUARIO ⚠️
   BEARER: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzOTgxNWVjZTI4ZjcyNWJlZGRmY2Y3OGE0YzRjZGU0ZiIsIm5iZiI6MTc2MDQ1NjUxNS4xNDcsInN1YiI6IjY4ZWU2ZjQzNDYzMzQ0Yjg0MTlkZjQ3MCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ejdXz4pm0dZn0OAVJvJ16R8SwNAa-MBkO_yttUiblLk", 
   options() {
     return {
@@ -224,6 +224,10 @@ function showView(pelicula) {
             pelicula.director || "Desconocido"
           }</p>
           ${
+            // Aquí se podría mostrar el estreno si fuera un dato guardado en la colección
+            pelicula.release_date ? `<p><strong>Estreno:</strong> ${pelicula.release_date}</p>` : ""
+          }
+          ${
             pelicula.tmdbId
               ? `<p class="mt-1">
                    <button class="keywords"
@@ -319,15 +323,14 @@ function resultsView(resultados) {
         <div class="result-body">
           <h3 class="movie-card-title">${r.title}</h3>
           <p class="meta">
-            <strong>Estreno:</strong> ${r.release_date || "desconocido"} ·
             <strong>Nota:</strong> ${r.vote_average?.toFixed(1) || "N/A"}
           </p>
           <p class="overview">${r.overview || "Sin sinopsis disponible."}</p>
-          <div class="actions mt-2">
+          <div class="result-actions mt-2">
             <button class="add-from-api" data-result-idx="${idx}">
               Añadir a mi colección
             </button>
-            <button class="keywords"
+            <button class="keywords secondary"
                     data-movie-id="${r.id}"
                     data-movie-title="${r.title}">
               Ver palabras clave
@@ -610,6 +613,7 @@ function addFromAPIContr(idx) {
       director: "",
       miniatura,
       tmdbId: r.id,
+      release_date: r.release_date || "Desconocida", // Guardamos el estreno para mostrarlo en 'showView'
     });
 
     saveMovies(peliculas);
