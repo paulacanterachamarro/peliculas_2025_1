@@ -286,7 +286,7 @@ input[type="text"]:focus {
 }
 
 .result-card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
@@ -317,15 +317,7 @@ input[type="text"]:focus {
   letter-spacing: 0.05em;
 }
 
-.result-body .overview {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+/* Eliminamos el estilo de .overview */
 
 /* Estilo para las acciones en las tarjetas de búsqueda (separación vertical) */
 .result-actions {
@@ -348,6 +340,7 @@ input[type="text"]:focus {
   padding: 0;
 }
 
+/* Hacemos el keyword-item clickeable para filtrar */
 .keyword-item {
   background: #fff;
   padding: 0.75rem 1rem;
@@ -358,6 +351,13 @@ input[type="text"]:focus {
   align-items: center;
   justify-content: space-between;
   border: 1px solid #e5e7eb;
+  cursor: pointer; /* Indicamos que es clickeable */
+  transition: all 0.2s ease;
+}
+
+.keyword-item:hover {
+    background: #eff6ff; /* Fondo azul claro al pasar el ratón */
+    border-color: var(--primary-color);
 }
 
 .keyword-label {

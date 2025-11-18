@@ -21,7 +21,6 @@ const TMDB = {
 //   Datos iniciales
 // =======================
 const MOVIES_STORAGE_KEY = "mis_peliculas_2025";
-const KEYWORDS_STORAGE_KEY = "mis_keywords_2025";
 
 const mis_peliculas_iniciales = [
   {
@@ -98,25 +97,6 @@ function ensureInitialized() {
 }
 
 // =======================
-//   Almacenamiento keywords
-// =======================
-function loadMyKeywords() {
-  try {
-    const raw = localStorage.getItem(KEYWORDS_STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (e) {
-    console.error("Error cargando mis palabras clave", e);
-    return [];
-  }
-}
-
-function saveMyKeywords(list) {
-  localStorage.setItem(KEYWORDS_STORAGE_KEY, JSON.stringify(list));
-}
-
-// =======================
 //   Limpieza / procesado de keywords
 // =======================
 function cleanKeyword(keyword) {
@@ -155,7 +135,6 @@ function indexView(peliculas) {
         <div class="mt-2">
           <button class="new">Añadir película</button>
           <button class="open-search secondary">Buscar en TMDb</button>
-          <button class="my-keywords secondary">Mis palabras clave</button>
         </div>
       </section>
     `;
@@ -203,7 +182,6 @@ function indexView(peliculas) {
         <button class="new">Añadir película</button>
         <button class="reset secondary">Reset</button>
         <button class="open-search secondary">Buscar en TMDb</button>
-        <button class="my-keywords secondary">Mis palabras clave</button>
       </div>
     </section>
   `;
@@ -224,7 +202,6 @@ function showView(pelicula) {
             pelicula.director || "Desconocido"
           }</p>
           ${
-            // Aquí se podría mostrar el estreno si fuera un dato guardado en la colección
             pelicula.release_date ? `<p><strong>Estreno:</strong> ${pelicula.release_date}</p>` : ""
           }
           ${
@@ -325,7 +302,7 @@ function resultsView(resultados) {
           <p class="meta">
             <strong>Nota:</strong> ${r.vote_average?.toFixed(1) || "N/A"}
           </p>
-          <p class="overview">${r.overview || "Sin sinopsis disponible."}</p>
+          
           <div class="result-actions mt-2">
             <button class="add-from-api" data-result-idx="${idx}">
               Añadir a mi colección
@@ -359,10 +336,10 @@ function keywordsView(movieTitle, keywords) {
           ${keywords
             .map(
               (k) => `
-            <li class="keyword-item">
+            <li class="keyword-item filter-by-keyword" data-keyword="${k}">
               <span class="keyword-label">${k}</span>
-              <button class="add-keyword" data-keyword="${k}">
-                Agregar a mi lista
+              <button class="secondary" disabled>
+                Filtrar colección
               </button>
             </li>
           `
@@ -378,51 +355,59 @@ function keywordsView(movieTitle, keywords) {
       }
 
       <div class="keywords-actions">
-        <button class="my-keywords secondary">Ver mi lista de palabras clave</button>
         <button class="index">Volver al inicio</button>
       </div>
     </section>
   `;
 }
 
-function myKeywordsView(keywords) {
-  const hasKeywords = keywords && keywords.length > 0;
+function filteredMoviesView(keyword, peliculas) {
+  if (!peliculas || peliculas.length === 0) {
+    return `
+      <section>
+        <h2>Resultados para '${keyword}'</h2>
+        <p class="warning">
+          No se encontró ninguna película en tu colección con esta palabra clave.
+        </p>
+        <div class="mt-2">
+          <button class="index">Volver al inicio</button>
+        </div>
+      </section>
+    `;
+  }
+
+  const cards = peliculas
+    .map(
+      (pelicula, i) => `
+      <article class="movie-card">
+        <img src="${pelicula.miniatura || "https://via.placeholder.com/500x750?text=Sin+imagen"}"
+             alt="Póster de ${pelicula.titulo}"
+             onerror="this.src='https://via.placeholder.com/500x750?text=Sin+imagen'">
+        <div class="movie-card-body">
+          <h3 class="movie-card-title">${pelicula.titulo}</h3>
+          <p class="movie-card-director">${
+            pelicula.director || "<em>Director desconocido</em>"
+          }</p>
+        </div>
+      </article>
+    `
+    )
+    .join("");
 
   return `
-    <section class="my-keywords-view">
-      <h2>Mis palabras clave</h2>
-
-      ${
-        hasKeywords
-          ? `
-        <ul class="keywords-list mt-2">
-          ${keywords
-            .map(
-              (k, i) => `
-            <li class="keyword-item">
-              <span class="keyword-label">${k}</span>
-              <button class="delete-keyword danger" data-keyword-idx="${i}">
-                Eliminar
-              </button>
-            </li>
-          `
-            )
-            .join("")}
-        </ul>
-        `
-          : `
-        <p class="info mt-2">
-          Todavía no has añadido ninguna palabra clave a tu lista.
-        </p>
-        `
-      }
-
+    <section>
+      <h2>Películas en tu colección con la palabra clave: "${keyword}"</h2>
+      <p class="info">Mostrando ${peliculas.length} resultado(s).</p>
+      <div class="movies-grid">
+        ${cards}
+      </div>
       <div class="mt-2">
         <button class="index">Volver al inicio</button>
       </div>
     </section>
   `;
 }
+
 
 // =======================
 //   Controladores
@@ -613,7 +598,7 @@ function addFromAPIContr(idx) {
       director: "",
       miniatura,
       tmdbId: r.id,
-      release_date: r.release_date || "Desconocida", // Guardamos el estreno para mostrarlo en 'showView'
+      release_date: r.release_date || "Desconocida",
     });
 
     saveMovies(peliculas);
@@ -628,6 +613,18 @@ function addFromAPIContr(idx) {
 
 // --- Keywords ----
 function keywordsContr(movieId, movieTitle) {
+  // CORRECCIÓN: Validamos el movieId antes de llamar a la API
+  if (!movieId || isNaN(movieId) || movieId <= 0) {
+    elMain().innerHTML = `
+      <section class="message warning">
+        <h2>Error de Datos</h2>
+        <p>La película seleccionada no tiene un identificador TMDb válido para buscar sus palabras clave.</p>
+        <button class="index">Volver al inicio</button>
+      </section>
+    `;
+    return;
+  }
+  
   const main = elMain();
   main.innerHTML = `
     <section class="message info">
@@ -661,48 +658,149 @@ function keywordsContr(movieId, movieTitle) {
     });
 }
 
-function myKeywordsContr() {
-  const keywords = loadMyKeywords();
-  elMain().innerHTML = myKeywordsView(keywords);
+function filterByKeywordContr(keyword) {
+    const main = elMain();
+    main.innerHTML = `
+        <section class="message info">
+            <h2>Filtrando por "${keyword}"...</h2>
+            <p>Buscando en TMDb películas con esta palabra clave para cruzar con tu colección.</p>
+        </section>
+    `;
+
+    // 1. Buscamos en TMDb películas que contengan la keyword 
+    const url = `${TMDB.BASE}/search/movie?query=${encodeURIComponent(
+        keyword
+    )}&language=es-ES&include_adult=false`;
+
+    fetch(url, TMDB.options())
+        .then((res) => {
+            if (!res.ok) throw new Error("Respuesta no OK al buscar en TMDb");
+            return res.json();
+        })
+        .then((data) => {
+            const tmdb_results = data.results || [];
+            const localMovies = loadMovies();
+            const localTmdbIds = new Set(localMovies.map(m => m.tmdbId).filter(id => id));
+
+            // 2. Intersectamos: filtramos los resultados de TMDb para quedarnos solo con las películas que
+            // están en nuestra colección local (usando el tmdbId).
+            const tmdbMatches = tmdb_results.filter(r => localTmdbIds.has(r.id));
+            
+            // 3. Cruzamos los objetos para mostrar los datos locales (que tienen título, miniatura, etc.)
+            const filteredMovies = localMovies.filter(localMovie => 
+                tmdbMatches.some(tmdbMovie => tmdbMovie.id === localMovie.tmdbId)
+            );
+
+            // 4. Renderizamos la nueva vista con los resultados
+            main.innerHTML = filteredMoviesView(keyword, filteredMovies);
+        })
+        .catch((err) => {
+            console.error("Error al filtrar por palabra clave", err);
+            main.innerHTML = `
+                <section class="message error">
+                    <h2>Error al filtrar</h2>
+                    <p>Ha ocurrido un error al buscar películas por la palabra clave "${keyword}".</p>
+                    <button class="index">Volver al inicio</button>
+                </section>
+            `;
+        });
 }
 
-function addKeywordToList(keywordRaw) {
-  const kw = cleanKeyword(keywordRaw || "");
-  if (!kw) {
-    alert("Palabra clave no válida.");
+
+// =======================
+//   Controladores
+// =======================
+function indexContr() {
+  const peliculas = loadMovies();
+  elMain().innerHTML = indexView(peliculas);
+}
+
+function showContr(i) {
+  const peliculas = loadMovies();
+  const pelicula = peliculas[i];
+  if (!pelicula) {
+    indexContr();
+    return;
+  }
+  elMain().innerHTML = showView(pelicula);
+}
+
+function newContr() {
+  elMain().innerHTML = newView();
+}
+
+function createContr() {
+  const titulo = document.getElementById("titulo").value.trim();
+  const director = document.getElementById("director").value.trim();
+  const miniatura = document.getElementById("miniatura").value.trim();
+
+  if (!titulo) {
+    alert("El título es obligatorio.");
     return;
   }
 
-  const list = loadMyKeywords();
-  if (list.includes(kw)) {
-    alert(`La palabra clave "${kw}" ya está en tu lista.`);
+  const peliculas = loadMovies();
+  peliculas.push({ titulo, director, miniatura });
+  saveMovies(peliculas);
+  indexContr();
+}
+
+function editContr(i) {
+  const peliculas = loadMovies();
+  const pelicula = peliculas[i];
+  if (!pelicula) {
+    indexContr();
+    return;
+  }
+  elMain().innerHTML = editView(i, pelicula);
+}
+
+function updateContr(i) {
+  const form = document.querySelector("form[data-id]");
+  if (!form) return;
+
+  const titulo = document.getElementById("titulo").value.trim();
+  const director = document.getElementById("director").value.trim();
+  const miniatura = document.getElementById("miniatura").value.trim();
+
+  if (!titulo) {
+    alert("El título es obligatorio.");
     return;
   }
 
-  list.push(kw);
-  list.sort();
-  saveMyKeywords(list);
+  const peliculas = loadMovies();
+  if (!peliculas[i]) return;
 
-  alert(`"${kw}" se ha añadido a tu lista de palabras clave.`);
+  peliculas[i].titulo = titulo;
+  peliculas[i].director = director;
+  peliculas[i].miniatura = miniatura;
+  saveMovies(peliculas);
+  indexContr();
 }
 
-function deleteKeywordContr(idx) {
-  const list = loadMyKeywords();
-  if (idx < 0 || idx >= list.length) return;
+function deleteContr(i) {
+  const peliculas = loadMovies();
+  const pelicula = peliculas[i];
+  if (!pelicula) return;
 
-  const kw = list[idx];
-  if (!confirm(`¿Eliminar la palabra clave "${kw}" de tu lista?`)) return;
+  if (!confirm(`¿Seguro que quieres borrar "${pelicula.titulo}"?`)) {
+    return;
+  }
 
-  list.splice(idx, 1);
-  saveMyKeywords(list);
-
-  myKeywordsContr();
+  peliculas.splice(i, 1);
+  saveMovies(peliculas);
+  indexContr();
 }
 
-// =======================
-//   Inicialización
-// =======================
-function initContr() {
+function resetContr() {
+  if (
+    !confirm(
+      "¿Seguro que quieres restablecer la colección inicial de películas?"
+    )
+  ) {
+    return;
+  }
+  localStorage.removeItem(MOVIES_STORAGE_KEY);
   ensureInitialized();
   indexContr();
 }
@@ -738,20 +836,16 @@ document.addEventListener("click", (ev) => {
     const idx = Number(ev.target.dataset.resultIdx);
     addFromAPIContr(idx);
   }
-  // --- Nuevas rutas para keywords ---
+  // --- Rutas de Keywords ---
   else if (matchEvent(ev, ".keywords")) {
     const btn = ev.target.closest(".keywords");
     const movieId = Number(btn.dataset.movieId);
     const movieTitle = btn.dataset.movieTitle || "";
     keywordsContr(movieId, movieTitle);
-  } else if (matchEvent(ev, ".add-keyword")) {
-    const kw = ev.target.dataset.keyword;
-    addKeywordToList(kw);
-  } else if (matchEvent(ev, ".my-keywords")) {
-    myKeywordsContr();
-  } else if (matchEvent(ev, ".delete-keyword")) {
-    const idx = Number(ev.target.dataset.keywordIdx);
-    deleteKeywordContr(idx);
+  } else if (matchEvent(ev, ".filter-by-keyword")) {
+    const item = ev.target.closest(".filter-by-keyword");
+    const kw = item.dataset.keyword;
+    filterByKeywordContr(kw);
   }
 });
 
