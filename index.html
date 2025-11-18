@@ -1,28 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <title>Mis Películas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="styles.css" rel="stylesheet" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <title>Mis Películas Favoritas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <h1>Mis Películas Favoritas</h1>
-    <nav>
-      <a href="#" class="index">Inicio</a>
-      <a href="#" class="open-search">Buscar</a>
-    </nav>
+  <header class="app-header">
+    <div class="container header-content">
+      <h1>Mis Películas Favoritas</h1>
+      <nav class="main-nav">
+        <button class="index">Inicio</button>
+        <button class="open-search">Buscar en TMDb</button>
+        <button class="my-keywords">Mis palabras clave</button>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <div id="main">Cargando…</div>
+  <main id="main" class="container">
+    <!-- El contenido se rellena dinámicamente desde script.js -->
   </main>
 
-  <footer>
-    Hecho con ❤️ + TMDb (The Movie Database)
+  <footer class="app-footer">
+    <div class="container">
+      <p>Ejercicio películas · TMDb · 2025</p>
+    </div>
   </footer>
 
   <script src="script.js"></script>
